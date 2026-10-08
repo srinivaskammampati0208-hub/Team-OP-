@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Demo | HealAI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="navbar">
+  <div class="container nav-content">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">✚</span>
+      HealAI
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="how-it-works.html">How It Works</a>
+      <a class="active" href="dashboard.html">Dashboard</a>
+      <a href="resources.html">Resources</a>
+      <a href="contact.html">Contact</a>
+      <a class="nav-cta btn btn-primary" href="dashboard.html">Try Demo</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="dashboard.html" class="btn btn-primary">Try Demo</a>
+    </div>
+
+    <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+  </div>
+</header>
+
+<main class="dashboard" id="main">
+  <div class="container">
+    <div class="dashboard-header">
+      <div>
+        <div class="eyebrow">● Demo patient profile</div>
+        <h2 id="dashGreeting">Hello, Alex</h2>
+        <p>Here is your wound monitoring overview.</p>
+      </div>
+
+      <a href="contact.html" class="btn btn-primary">Contact Care Team</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <strong id="statQuality">—</strong>
+        <span>Last image quality</span>
+      </div>
+
+      <div class="stat">
+        <strong>14</strong>
+        <span>Days monitored</span>
+      </div>
+
+      <div class="stat">
+        <strong id="statUploads">6</strong>
+        <span>Images uploaded</span>
+      </div>
+
+      <div class="stat">
+        <strong id="statStatus">Waiting</strong>
+        <span>Verification</span>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <section class="upload-card">
+        <h3>Upload a wound photo</h3>
+        <p>HealAI checks whether the photo is a usable medical image, then screens visible tissue patterns.</p>
+
+        <label class="upload-box" id="uploadBox" for="woundImage">
+          <div>
+            <div class="upload-icon">📷</div>
+            <strong id="uploadText">Drop a photo or click to upload</strong>
+            <p>PNG, JPG, or WEBP · close-up of the wound</p>
+          </div>
+        </label>
+
+        <input
+          id="woundImage"
+          class="sr-only"
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/*"
+        />
+
+        <div class="preview-stage" id="previewStage" hidden>
+          <canvas id="analysisCanvas" aria-label="Analyzed wound image"></canvas>
+          <div class="overlay-legend" id="overlayLegend" hidden>
+            <span><i class="swatch swatch-red"></i> Redness</span>
+            <span><i class="swatch swatch-yellow"></i> Slough</span>
+            <span><i class="swatch swatch-dark"></i> Dark tissue</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="analysis-card" id="analysisCard" aria-live="polite">
+        <div class="analysis-empty" id="analysisEmpty">
+          <div class="card-icon">🔍</div>
+          <h3>Waiting for an image</h3>
+          <p>
+            Upload a clear, well-lit close-up. The scanner verifies photo quality
+            and looks for skin and wound-like coloring in the image itself.
+          </p>
+        </div>
+
+        <div class="analysis-empty" id="analysisWorking" hidden>
+          <div class="card-icon">⏳</div>
+          <h3>Analyzing photo…</h3>
+          <p>Checking lighting, sharpness, skin, and concentrated wound-like tissue.</p>
+        </div>
+
+        <div id="analysisResult" hidden>
+          <div class="analysis-header">
+            <span class="analysis-badge" id="analysisBadge">Verified</span>
+            <div>
+              <h3 id="analysisTitle">Image verification</h3>
+              <p id="analysisSummary"></p>
+            </div>
+          </div>
+
+          <div class="meters" id="analysisMeters"></div>
+          <ul class="findings" id="analysisFindings"></ul>
+
+          <div class="disclaimer">
+            This is a screening check of photo quality and visible color patterns.
+            It is not a diagnosis and does not replace professional medical care.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="dashboard-grid chart-card-wide">
+      <section class="chart-card">
+        <h3>Today’s check-in</h3>
+        <p>Track symptoms that a photo cannot show. Saved only on this device.</p>
+
+        <form id="checkinForm">
+          <label for="painScore"><strong>Pain level</strong></label>
+          <div class="pain-row">
+            <input id="painScore" name="pain" type="range" min="0" max="10" value="2" />
+            <output id="painValue" for="painScore">2</output>
+          </div>
+
+          <div class="checkin-grid">
+            <label class="checkin-option"><input type="checkbox" name="swelling" /> Swelling</label>
+            <label class="checkin-option"><input type="checkbox" name="warmth" /> Warmth</label>
+            <label class="checkin-option"><input type="checkbox" name="drainage" /> Drainage</label>
+            <label class="checkin-option"><input type="checkbox" name="odor" /> Odor</label>
+          </div>
+
+          <div class="form-group">
+            <label for="checkinNote">Notes</label>
+            <textarea id="checkinNote" name="note" placeholder="Pain, dressing changes, or anything new"></textarea>
+          </div>
+
+          <button class="btn btn-primary" type="submit">Save check-in</button>
+          <p class="checkin-status" id="checkinSaved" hidden></p>
+        </form>
+      </section>
+
+      <section class="chart-card">
+        <h3>Capture checklist</h3>
+        <p>Better photos make verification more reliable.</p>
+        <ul class="checklist">
+          <li>Use daylight or a lamp from the side, not a harsh flash.</li>
+          <li>Hold 15–25 cm away and keep the camera parallel to the skin.</li>
+          <li>Fill the frame with the wound and a little surrounding skin.</li>
+          <li>Remove extra clothing or bedding from the background.</li>
+          <li>If a dressing is covering the wound, only uncover it if a clinician has said it is safe.</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="chart-card chart-card-wide">
+      <h3>Healing trend</h3>
+      <p>Illustrative monitoring data for demonstration purposes.</p>
+
+      <div class="chart">
+        <div class="bar" style="height: 28%"></div>
+        <div class="bar" style="height: 37%"></div>
+        <div class="bar" style="height: 44%"></div>
+        <div class="bar" style="height: 52%"></div>
+        <div class="bar" style="height: 67%"></div>
+        <div class="bar" style="height: 76%"></div>
+        <div class="bar" style="height: 88%"></div>
+      </div>
+
+      <div class="chart-labels">
+        <span>Day 2</span>
+        <span>Day 4</span>
+        <span>Day 6</span>
+        <span>Day 8</span>
+        <span>Day 10</span>
+        <span>Day 12</span>
+        <span>Day 14</span>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h3>HealAI</h3>
+        <p>
+          Smart wound monitoring designed to support better-informed care
+          conversations.
+        </p>
+      </div>
+
+      <div>
+        <h4>Platform</h4>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="dashboard.html">Demo Dashboard</a>
+      </div>
+
+      <div>
+        <h4>Resources</h4>
+        <a href="resources.html">Patient Resources</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+
+      <div>
+        <h4>Important</h4>
+        <p>Not a diagnostic or emergency-care service.</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      © 2026 HealAI. Built for responsible digital health innovation.
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
