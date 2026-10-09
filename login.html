@@ -9,54 +9,79 @@
 </head>
 <body class="login-page">
   <main class="login-layout">
-    <a href="login.html" class="logo login-logo" aria-label="HealAI login">
-      <span class="logo-mark">✚</span>
-      HealAI
-    </a>
+    <section class="login-showcase" aria-label="About HealAI">
+      <a href="login.html" class="logo login-logo" aria-label="HealAI login">
+        <span class="logo-mark">✚</span>
+        HealAI
+      </a>
 
-    <section class="login-card" aria-labelledby="loginTitle">
-      <div class="eyebrow">● Welcome to HealAI</div>
-      <h1 id="loginTitle">Log in to continue</h1>
-      <p class="login-intro">Sign in to open your wound monitoring home page.</p>
+      <div class="login-showcase-copy">
+        <span class="login-kicker">CARE, WITH MORE CLARITY</span>
+        <h1>Your healing journey, made easier to follow.</h1>
+        <p>Keep your wound check-ins and progress insights together in one simple place.</p>
+      </div>
 
-      <form id="loginForm" class="login-form">
-        <div class="form-group">
-          <label for="loginEmail">Email address</label>
-          <input
-            id="loginEmail"
-            name="email"
-            type="email"
-            autocomplete="username"
-            placeholder="you@example.com"
-            required
-          />
+      <div class="login-visual" aria-hidden="true">
+        <div class="login-orbit login-orbit-one"></div>
+        <div class="login-orbit login-orbit-two"></div>
+        <div class="login-visual-cross">✚</div>
+        <div class="login-insight-card">
+          <span class="login-insight-icon">✓</span>
+          <span><strong>A clearer view</strong><small>Your monitoring, at a glance</small></span>
+          <span class="login-insight-arrow">↗</span>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label for="loginPassword">Password</label>
-          <input
-            id="loginPassword"
-            name="password"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Enter your password"
-            required
-          />
-        </div>
-
-        <button class="btn btn-primary login-submit" type="submit">Log in</button>
-      </form>
-
-      <p class="login-demo-note">
-        Demo login: use any valid email address and a password. This demo does
-        not verify identity; do not enter real patient information or passwords.
-      </p>
+      <p class="login-panel-note">Thoughtful tools to support better-informed care conversations.</p>
     </section>
 
-    <p class="login-disclaimer">
-      HealAI is an AI-assisted monitoring platform and does not replace
-      professional medical advice, diagnosis, or treatment.
-    </p>
+    <section class="login-content" aria-labelledby="loginTitle">
+      <div class="login-card">
+        <div class="login-welcome">Welcome back</div>
+        <h2 id="loginTitle">Log in to HealAI</h2>
+        <p class="login-intro">Enter your details to continue to your monitoring home page.</p>
+
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label for="loginEmail">Email address</label>
+            <input
+              id="loginEmail"
+              name="email"
+              type="email"
+              autocomplete="username"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+          <p class="login-hint">
+            Forgot your password? <a href="reset-password.html">Reset it here</a>.
+          </p>
+
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input
+              id="loginPassword"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          <button class="btn btn-primary login-submit" type="submit">Log in <span aria-hidden="true">→</span></button>
+        </form>
+
+        <p class="login-demo-note">
+          <strong>Demo access</strong>
+          Use any valid email address and a password. This demo does not verify identity; do not enter real patient information or passwords.
+        </p>
+      </div>
+
+      <p class="login-disclaimer">
+        HealAI supports monitoring and does not replace professional medical advice, diagnosis, or treatment.
+      </p>
+    </section>
   </main>
 </body>
 </html>
