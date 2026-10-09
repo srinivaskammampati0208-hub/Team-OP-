@@ -733,6 +733,7 @@ function renderAnalysis(result) {
   const summary = document.querySelector("#analysisSummary");
   const meters = document.querySelector("#analysisMeters");
   const findings = document.querySelector("#analysisFindings");
+  const careGuidance = document.querySelector("#careGuidance");
   const qualityStat = document.querySelector("#statQuality");
   const statusStat = document.querySelector("#statStatus");
   const legend = document.querySelector("#overlayLegend");
@@ -775,6 +776,13 @@ function renderAnalysis(result) {
       if (item.tone) li.className = item.tone;
       findings.appendChild(li);
     });
+  }
+
+  if (careGuidance) {
+    careGuidance.hidden = !(
+      result.woundDetected &&
+      (result.status === "verified" || result.status === "review")
+    );
   }
 
   if (legend) {
@@ -969,6 +977,211 @@ if (checkinForm) {
     if (saved) {
       saved.hidden = false;
       saved.textContent = `Check-in saved on this device · ${record.at}`;
+    }
+  });
+}
+
+const medicationReminderForm = document.querySelector("#medicationReminderForm");
+if (medicationReminderForm) {
+  const medicationNameInput = document.querySelector("#reminderMedicationName");
+  const medicationTimeInput = document.querySelector("#reminderMedicationTime");
+  const medicationReminderList = document.querySelector("#medicationReminderList");
+  const medicationReminderStatus = document.querySelector("#medicationReminderStatus");
+  const enableMedicationNotifications = document.querySelector("#enableMedicationNotifications");
+  const REMINDER_KEY = "healai-medication-reminders";
+  const notificationKey = "healai-medication-notification-dates";
+  let reminders = [];
+  let notifiedDates = {};
+
+  function showMedicationReminderStatus(message, isError = false) {
+    if (!medicationReminderStatus) return;
+    medicationReminderStatus.hidden = false;
+    medicationReminderStatus.textContent = message;
+    medicationReminderStatus.classList.toggle("reminder-error", isError);
+  }
+
+  function readReminderData(key, fallback, validate) {
+    const stored = localStorage.getItem(key);
+    if (stored === null) return fallback;
+    const parsed = JSON.parse(stored);
+    if (!validate(parsed)) throw new Error("Saved reminder data has an invalid format.");
+    return parsed;
+  }
+
+  function isValidReminderTime(value) {
+    if (typeof value !== "string" || !/^\d{2}:\d{2}$/.test(value)) return false;
+    const [hours, minutes] = value.split(":").map(Number);
+    return hours < 24 && minutes < 60;
+  }
+
+  function saveReminderData() {
+    try {
+      localStorage.setItem(REMINDER_KEY, JSON.stringify(reminders));
+      localStorage.setItem(notificationKey, JSON.stringify(notifiedDates));
+      return true;
+    } catch (error) {
+      showMedicationReminderStatus(`Could not save reminders on this device: ${error.message}`, true);
+      return false;
+    }
+  }
+
+  function getLocalDateKey(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function isReminderDue(reminder, now = new Date()) {
+    const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    return reminder.time <= currentTime;
+  }
+
+  function renderMedicationReminders() {
+    if (!medicationReminderList) return;
+    medicationReminderList.replaceChildren();
+
+    if (!reminders.length) {
+      const emptyItem = document.createElement("li");
+      emptyItem.className = "reminder-empty";
+      emptyItem.textContent = "No reminders scheduled yet.";
+      medicationReminderList.appendChild(emptyItem);
+      return;
+    }
+
+    reminders.forEach((reminder) => {
+      const item = document.createElement("li");
+      item.className = "medication-reminder-item";
+      const details = document.createElement("div");
+      const name = document.createElement("strong");
+      const time = document.createElement("span");
+      const due = document.createElement("span");
+      const removeButton = document.createElement("button");
+      const dueToday = isReminderDue(reminder);
+
+      name.textContent = reminder.name;
+      time.textContent = new Date(`2000-01-01T${reminder.time}`).toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+      });
+      due.className = dueToday ? "reminder-due" : "reminder-upcoming";
+      due.textContent = dueToday ? "Due today" : "Upcoming";
+      removeButton.type = "button";
+      removeButton.className = "btn btn-secondary reminder-remove";
+      removeButton.textContent = "Remove";
+      removeButton.setAttribute("aria-label", `Remove reminder for ${reminder.name}`);
+      removeButton.addEventListener("click", () => {
+        reminders = reminders.filter((entry) => entry.id !== reminder.id);
+        delete notifiedDates[reminder.id];
+        if (saveReminderData()) {
+          renderMedicationReminders();
+          showMedicationReminderStatus(`Removed the reminder for ${reminder.name}.`);
+        }
+      });
+
+      details.append(name, time, due);
+      item.append(details, removeButton);
+      medicationReminderList.appendChild(item);
+    });
+  }
+
+  function checkMedicationReminders() {
+    const now = new Date();
+    const dateKey = getLocalDateKey(now);
+    let didNotify = false;
+
+    reminders.forEach((reminder) => {
+      if (!isReminderDue(reminder, now) || notifiedDates[reminder.id] === dateKey) return;
+
+      const message = `Time for your scheduled medication: ${reminder.name}. Follow the instructions from your clinician or pharmacist.`;
+      showMedicationReminderStatus(message);
+      if ("Notification" in window && Notification.permission === "granted") {
+        try {
+          new Notification("Medication reminder", {
+            body: "Time for your scheduled medication. Open HealAI to view details.",
+            tag: `healai-${reminder.id}`,
+          });
+        } catch (error) {
+          showMedicationReminderStatus(
+            `The browser could not display a notification: ${error.message}. The reminder is shown on this page.`,
+            true
+          );
+        }
+      }
+      notifiedDates[reminder.id] = dateKey;
+      didNotify = true;
+    });
+
+    if (didNotify) {
+      saveReminderData();
+      renderMedicationReminders();
+    }
+  }
+
+  try {
+    reminders = readReminderData(
+      REMINDER_KEY,
+      [],
+      (value) =>
+        Array.isArray(value) &&
+        value.every(
+          (entry) =>
+            entry &&
+            typeof entry.id === "string" &&
+            typeof entry.name === "string" &&
+            isValidReminderTime(entry.time)
+        )
+    );
+    notifiedDates = readReminderData(
+      notificationKey,
+      {},
+      (value) => value !== null && typeof value === "object" && !Array.isArray(value)
+    );
+    renderMedicationReminders();
+    checkMedicationReminders();
+    window.setInterval(checkMedicationReminders, 15_000);
+    window.setInterval(renderMedicationReminders, 60_000);
+  } catch (error) {
+    showMedicationReminderStatus(`Could not load saved reminders: ${error.message}`, true);
+  }
+
+  medicationReminderForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!medicationReminderForm.reportValidity()) return;
+    const name = medicationNameInput.value.trim();
+    const time = medicationTimeInput.value;
+    if (!name || !time) return;
+
+    reminders.push({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      name,
+      time,
+    });
+    if (!saveReminderData()) {
+      reminders.pop();
+      return;
+    }
+
+    medicationReminderForm.reset();
+    renderMedicationReminders();
+    showMedicationReminderStatus(`Daily reminder saved for ${name}. Keep this dashboard open for reminders.`);
+    checkMedicationReminders();
+  });
+
+  enableMedicationNotifications?.addEventListener("click", async () => {
+    if (!("Notification" in window)) {
+      showMedicationReminderStatus("This browser does not support notifications. Keep the dashboard open to see on-page reminders.");
+      return;
+    }
+    try {
+      const permission = await Notification.requestPermission();
+      showMedicationReminderStatus(
+        permission === "granted"
+          ? "Browser notifications enabled for scheduled reminders."
+          : "Notifications were not enabled. Reminders will appear on this page while it is open."
+      );
+    } catch (error) {
+      showMedicationReminderStatus(`Could not enable notifications: ${error.message}`, true);
     }
   });
 }

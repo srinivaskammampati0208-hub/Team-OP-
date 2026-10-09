@@ -735,6 +735,113 @@ body.nav-open {
   margin-bottom: 6px;
 }
 
+.chart-card input[type="text"],
+.chart-card input[type="time"] {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: white;
+  color: var(--text);
+  font: inherit;
+}
+
+.chart-card input[type="text"]:focus,
+.chart-card input[type="time"]:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.reminder-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 0.6fr) auto;
+  align-items: end;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.reminder-form .form-group {
+  margin-bottom: 0;
+}
+
+.reminder-form .btn {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.reminder-options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.reminder-options p {
+  flex: 1 1 250px;
+  font-size: 0.85rem;
+}
+
+.medication-reminder-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  list-style: none;
+}
+
+.medication-reminder-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--light);
+}
+
+.medication-reminder-item > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.medication-reminder-item strong {
+  overflow-wrap: anywhere;
+  color: var(--navy);
+}
+
+.medication-reminder-item span,
+.reminder-empty {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.medication-reminder-item .reminder-due {
+  color: #9a3412;
+  font-weight: 700;
+}
+
+.medication-reminder-item .reminder-upcoming {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.reminder-remove {
+  padding: 7px 11px;
+  font-size: 0.85rem;
+}
+
+.reminder-error {
+  background: #fff1f2;
+  color: #9f1239;
+  border-left-color: #e11d48;
+}
+
 .chart-card textarea {
   width: 100%;
   min-height: 110px;
@@ -923,6 +1030,56 @@ body.nav-open {
   margin-top: 18px;
   padding: 14px 16px;
   font-size: 0.86rem;
+}
+
+.care-guidance {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eff6ff, #f0fdfa);
+}
+
+.care-guidance-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.care-guidance-heading h3 {
+  margin-bottom: 3px;
+}
+
+.care-guidance-heading p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.care-guidance-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 12px;
+  background: white;
+  color: var(--blue);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.care-reminders {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 16px 50px;
+  padding-left: 18px;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.care-contact-link {
+  margin-left: 50px;
 }
 
 .checklist {
@@ -1233,6 +1390,15 @@ input[type="range"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .reminder-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reminder-form button {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
   .cta-banner {
     flex-direction: column;
     align-items: flex-start;
@@ -1274,6 +1440,24 @@ input[type="range"] {
   .checkin-grid,
   .doctor-list {
     grid-template-columns: 1fr;
+  }
+
+  .reminder-form {
+    grid-template-columns: 1fr;
+  }
+
+  .reminder-form button {
+    grid-column: auto;
+  }
+
+  .medication-reminder-item > div {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 10px;
+  }
+
+  .medication-reminder-item .reminder-due,
+  .medication-reminder-item .reminder-upcoming {
+    grid-column: 1 / -1;
   }
 
   .dashboard-header {

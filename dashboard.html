@@ -25,12 +25,7 @@
       <a href="resources.html">Resources</a>
       <a href="contact.html">Contact</a>
       <a class="video-nav-link" href="doctors.html" aria-label="Video call with a doctor"><span aria-hidden="true">🎥</span> Video call</a>
-      <a class="nav-cta btn btn-primary" href="dashboard.html">Try Demo</a>
     </nav>
-
-    <div class="nav-actions">
-      <a href="dashboard.html" class="btn btn-primary">Try Demo</a>
-    </div>
 
     <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
   </div>
@@ -128,6 +123,22 @@
           <div class="meters" id="analysisMeters"></div>
           <ul class="findings" id="analysisFindings"></ul>
 
+          <section class="care-guidance" id="careGuidance" aria-labelledby="careGuidanceTitle" hidden>
+            <div class="care-guidance-heading">
+              <span class="care-guidance-icon" aria-hidden="true">✚</span>
+              <div>
+                <h3 id="careGuidanceTitle">General care reminders</h3>
+                <p>Photo screening cannot diagnose a wound or choose a safe medicine.</p>
+              </div>
+            </div>
+            <ul class="care-reminders">
+              <li>Follow the care instructions provided by your clinician.</li>
+              <li>Keep the dressing clean and change it as directed by your care team.</li>
+              <li>Do not start creams, antibiotics, or other medicines based on this photo.</li>
+            </ul>
+            <a class="btn btn-secondary care-contact-link" href="doctors.html">Contact a clinician</a>
+          </section>
+
           <div class="disclaimer">
             This is a screening check of photo quality and visible color patterns.
             It is not a diagnosis and does not replace professional medical care.
@@ -163,6 +174,31 @@
           <button class="btn btn-primary" type="submit">Save check-in</button>
           <p class="checkin-status" id="checkinSaved" hidden></p>
         </form>
+      </section>
+
+      <section class="chart-card medication-reminders" aria-labelledby="medicationReminderTitle">
+        <h3 id="medicationReminderTitle">Medication reminders</h3>
+        <p>Add a reminder using the medication instructions from your clinician or pharmacist. This tool does not recommend medicines or doses.</p>
+
+        <form id="medicationReminderForm" class="reminder-form">
+          <div class="form-group">
+            <label for="reminderMedicationName">Medication name</label>
+            <input id="reminderMedicationName" name="medication" type="text" maxlength="80" autocomplete="off" required />
+          </div>
+          <div class="form-group">
+            <label for="reminderMedicationTime">Reminder time</label>
+            <input id="reminderMedicationTime" name="time" type="time" required />
+          </div>
+          <button class="btn btn-primary" type="submit">Add daily reminder</button>
+        </form>
+
+        <div class="reminder-options">
+          <button id="enableMedicationNotifications" class="btn btn-secondary" type="button">Enable browser notifications</button>
+          <p>Reminders run while this dashboard is open. Browser notifications are optional and may not work if the browser is closed.</p>
+        </div>
+
+        <p id="medicationReminderStatus" class="checkin-status" role="status" aria-live="polite" hidden></p>
+        <ul id="medicationReminderList" class="medication-reminder-list" aria-label="Scheduled medication reminders"></ul>
       </section>
 
       <section class="chart-card">
